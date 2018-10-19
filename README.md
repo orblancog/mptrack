@@ -6,3 +6,7 @@ Quad gradients are below 100T/m, they are 0.75m long, and the distance between m
 
 The transport lattice is used as cell for a ring, in order to get a twiss file of a closed machine.
 
+Trying to generate geometry with MDISim as :
+*  Tfs2Geom -csv -- mtline IPMT -1 15 1 600 acc_twiss.tws
+
+
