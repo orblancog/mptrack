@@ -1,0 +1,98 @@
+none = 0;
+kq1 := kkq1/k1factor;
+kkq1 = 1.596765347;
+k1factor := 2;
+kq7 := kkq7/k1factor;
+kkq7 = -2.222078608;
+kq2 := kkq2/k1factor;
+kkq2 = 1.154832331;
+kq3 := kkq3/k1factor;
+kkq3 = 0.3055903162;
+kq6 := kkq6/k1factor;
+kkq6 = 0.3820957119;
+kq4 := kkq4/k1factor;
+kkq4 = -0.6308433731;
+kq5 := kkq5/k1factor;
+kkq5 = -1.334331364;
+
+Rbeampipe = 50e-3;
+
+ipa: marker			    , apertype=circle, aperture={Rbeampipe};
+qa1: quadrupole,l:= 0.75,k1:=-kq1   , apertype=circle, aperture={Rbeampipe};
+qa7: quadrupole,l:= 0.75,k1:=-kq7   , apertype=circle, aperture={Rbeampipe};
+qa2: quadrupole,l:= 0.75,k1:=-kq2   , apertype=circle, aperture={Rbeampipe};
+qa3: quadrupole,l:= 0.75,k1:=-kq3   , apertype=circle, aperture={Rbeampipe};
+qa6: quadrupole,l:= 0.75,k1:=-kq6   , apertype=circle, aperture={Rbeampipe};
+qa4: quadrupole,l:= 0.75,k1:=-kq4   , apertype=circle, aperture={Rbeampipe};
+qa5: quadrupole,l:= 0.75,k1:=-kq5   , apertype=circle, aperture={Rbeampipe};
+midp: marker			    , apertype=circle, aperture={Rbeampipe};
+qb5: quadrupole,l:= 0.75,k1:= kq5   , apertype=circle, aperture={Rbeampipe};
+qb4: quadrupole,l:= 0.75,k1:= kq4   , apertype=circle, aperture={Rbeampipe};
+qb6: quadrupole,l:= 0.75,k1:= kq6   , apertype=circle, aperture={Rbeampipe};
+qb3: quadrupole,l:= 0.75,k1:= kq3   , apertype=circle, aperture={Rbeampipe};
+qb2: quadrupole,l:= 0.75,k1:= kq2   , apertype=circle, aperture={Rbeampipe};
+qb7: quadrupole,l:= 0.75,k1:= kq7   , apertype=circle, aperture={Rbeampipe};
+qb1: quadrupole,l:= 0.75,k1:= kq1   , apertype=circle, aperture={Rbeampipe};
+ipb: marker			    , apertype=circle, aperture={Rbeampipe};
+tend: marker			    , apertype=circle, aperture={Rbeampipe};
+
+ipmt : marker			    , apertype=circle, aperture={Rbeampipe};
+
+ld1 := 0.5;
+ld2 := 0.5;
+ld3 := 0.1;
+ldspc = 0.2;
+da1  : drift, L = ld1;
+da2a : drift, L = ld2/2;
+da2b : drift, L = ld3/2;
+da3  : drift, L = ld3;
+db1  : drift, L = ld1;
+db2a : drift, L = ld2/2;
+db2b : drift, L = ld3/2;
+db3  : drift, L = ld3;
+dspc : drift, L = ldspc;
+
+freqca1 = 400;
+lagca1 = 0.5;
+voltca1 = 2.3919;
+CA1 : RFCAVITY, FREQ:= FREQCA1, LAG:= LAGCA1, VOLT:= VOLTCA1, apertype=circle, aperture={Rbeampipe};
+
+hmta : line = (ipa,da1,qa1,dspc,qa7,dspc,qa2,dspc,qa3,dspc,qa6,dspc,qa4,dspc,qa5,db3);
+hmtb : line = (db3,qb5,dspc,qb4,dspc,qb6,dspc,qb3,dspc,qb2,dspc,qb7,dspc,qb1,db1,ipb);
+
+! to install dipole
+hmtab : line = (db3,qa1,dspc,qa7,dspc,qa2,dspc,qa3,dspc,qa6,dspc,qa4,dspc,qa5,db3);
+hmtbb : line = (db3,qb5,dspc,qb4,dspc,qb6,dspc,qb3,dspc,qb2,dspc,qb7,dspc,qb1,db3);
+mt   : line = ((hmta,midp,hmtb),tend);!,-(hmta,midp,hmtb),tend);
+
+! to install Be target 1.5mm
+htargetlength = 1.5e-3;
+htarg : quadrupole, k1=0, l:= htargetlength, apertype=circle, aperture={Rbeampipe};
+ldtarget = ld1 - htargetlength;
+dtarget : drift, L= ldtarget;
+hmtat : line = (htarg,dtarget,qa1,dspc,qa7,dspc,qa2,dspc,qa3,dspc,qa6,dspc,qa4,dspc,qa5,db3);
+hmtbt : line = (db3,qb5,dspc,qb4,dspc,qb6,dspc,qb3,dspc,qb2,dspc,qb7,dspc,qb1,dtarget,htarg);
+
+
+/*
+mt: sequence, l = 14.1;
+ipa, at = 0;
+qa1, at = 0.875;
+qa7, at = 1.825;
+qa2, at = 2.775;
+qa3, at = 3.725;
+qa6, at = 4.675;
+qa4, at = 5.625;
+qa5, at = 6.575;
+midp, at = 7.05;
+qb5, at = 7.525;
+qb4, at = 8.475;
+qb6, at = 9.425;
+qb3, at = 10.375;
+qb2, at = 11.325;
+qb7, at = 12.275;
+qb1, at = 13.225;
+ipb, at = 14.1;
+tend, at = 14.1;
+endsequence;
+*/

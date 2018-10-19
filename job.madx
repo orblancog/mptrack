@@ -1,0 +1,74 @@
+!! oblancog First twiss 2018/NOV/17
+option,echo,info,warn;
+option,rbarc=false;
+call, file="mt.madx";
+k1factor := 2; !2 is for positrons, 1 for muons
+betx0 = 0.5;
+alfx0 = 0;
+bety0 = betx0;
+alfy0 = alfx0;
+b3deg :sbend, l=0.8, angle=6/360.*twopi, apertype=circle, aperture={Rbeampipe};
+
+! the accumulator acc is composed by :
+! hmta  : half line, name "a"
+! hmtb  : half line, name "b", antisimetric to "a"
+! hmtat : half line "a" with half target
+! hmtbt : half line "b" with half target
+! hmtab : half line "a" modified to put an 0.8m sbend
+! hmtbb : half line "b" modified to put an 0.8m sbend
+
+acc : line = (ipmt,60*(hmta,hmtbt,hmtat,hmtbt,hmtat,hmtb,hmta,hmtbb,b3deg,hmtab,midp,hmtb),ca1);
+!select, flag=twiss, clear;
+!select, flag=twiss, column=name,keyword,s,l,betx,bety,alfx,alfy,dx,k1l,grad,natchromx,natchromy;
+!select, flag=twiss, column=name,keyword,s,l,betx,bety,alfx,alfy,dx,k1l;
+
+
+! the beam 
+E0     := 45.000;![GeV]
+npar   := 1.9e10;
+emitx  := 5.73e-9;![m]
+emity  := 5.73e-11;![m] 
+blength:= 3.6e-3;![m]
+bcur   := 240e-3;![A]
+nbunch := 100;
+nparpb := 3.1e11;
+espread:= 1e-3;
+beam, PARTICLE=positron, ENERGY=E0,
+      ex=emitx, ey=emity, et=blength*espread,
+      sigt=blength, sige=espread, kbunch=nbunch,
+      NPART=nparpb, bcurrent=bcur, RADIATE=false;
+
+twiss_select_MDISim := 1;
+survey_select_all := 1;
+twiss_select_rmat := 1;
+select_sect := 0;
+call, file="twiss_select.madx";
+call, file="survey_select.madx";
+
+
+use, sequence=acc;
+save, sequence=acc, file="acc_model.seq";
+call, file = "acc_model.seq";
+use, sequence=acc;
+twiss, rmatrix,chrom,file="acc_twiss.tws";
+!twiss, rmatrix,chrom, betx=betx0, bety=bety0, dx=0, file="acc_twiss.tws";
+plot, interpolate, haxis=s, hmin=0, hmax=6e1, vaxis=betx,bety,colour=100;
+plot, interpolate, haxis=s, hmin=0, hmax=6e1, vaxis=mux,muy,colour=100;
+plot, interpolate, haxis=s, hmin=0, hmax=6e1, vaxis=wx,wy,colour=100;
+plot, interpolate, haxis=s, hmin=0, hmax=6e1, vaxis=phix,phiy,colour=100;
+survey, file="acc_survey.tfs";
+system, "ps2pdf madx.ps";
+system, "rm madx.ps";
+/*
+save, sequence=acc, file="acc.madx";
+call, file="acc.madx";
+use, sequence=acc;
+half_be_target : collimator, l:= 1.5e-3;
+seqedit, sequence=acc;
+  flatten;
+  install, element=half_be_target, at=6711.6-1.5001e-3;
+  flatten;
+endedit;
+use, sequence=acc;
+twiss, file="acc_be_target_twiss.tfs";
+*/
