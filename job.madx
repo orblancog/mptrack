@@ -1,13 +1,12 @@
 !! oblancog First twiss 2018/NOV/17
 option,echo,info,warn;
-option,rbarc=false;
 call, file="mt.madx";
 k1factor := 2; !2 is for positrons, 1 for muons
 betx0 = 0.5;
 alfx0 = 0;
 bety0 = betx0;
 alfy0 = alfx0;
-b3deg :sbend, l=0.8, angle=6/360.*twopi, apertype=circle, aperture={Rbeampipe};
+b1p2deg :sbend, l=0.8, angle=1.2/360*twopi, apertype=circle, aperture={Rbeampipe};
 
 ! the accumulator acc is composed by :
 ! hmta  : half line, name "a"
@@ -17,7 +16,7 @@ b3deg :sbend, l=0.8, angle=6/360.*twopi, apertype=circle, aperture={Rbeampipe};
 ! hmtab : half line "a" modified to put an 0.8m sbend
 ! hmtbb : half line "b" modified to put an 0.8m sbend
 
-acc : line = (ipmt,60*(hmta,hmtbt,hmtat,hmtbt,hmtat,hmtb,hmta,hmtbb,b3deg,hmtab,midp,hmtb),ca1);
+acc : line = (ipmt,300*(hmta,hmtbt,hmtat,hmtbt,hmtat,hmtb,hmta,hmtbb,b1p2deg,hmtab,midp,hmtb),ca1);
 !select, flag=twiss, clear;
 !select, flag=twiss, column=name,keyword,s,l,betx,bety,alfx,alfy,dx,k1l,grad,natchromx,natchromy;
 !select, flag=twiss, column=name,keyword,s,l,betx,bety,alfx,alfy,dx,k1l;
@@ -46,9 +45,9 @@ call, file="twiss_select.madx";
 call, file="survey_select.madx";
 
 
-use, sequence=acc;
-save, sequence=acc, file="acc_model.seq";
-call, file = "acc_model.seq";
+!use, sequence=acc;
+!save, sequence=acc, file="acc_model.seq";
+!call, file = "acc_model.seq";
 use, sequence=acc;
 twiss, rmatrix,chrom,file="acc_twiss.tws";
 !twiss, rmatrix,chrom, betx=betx0, bety=bety0, dx=0, file="acc_twiss.tws";

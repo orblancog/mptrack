@@ -30,7 +30,7 @@ select, flag=twiss, column=name,keyword,s,betx,alfx, mux,bety,alfy,muy,x,px,y,py
 
 if( twiss_select_magn == 1 )
 {
-  select, flag=twiss, column=l,lrad,angle,k1l, k1s, k2l,k2s, tilt, e1, e2, fint, fintx ;             ! basic magnet properties relevant for bends, quads and orbit correctors
+  select, flag=twiss, column=l,lrad,angle, k1l, k1s, k2l,k2s, tilt, e1, e2, fint, fintx ;             ! basic magnet properties relevant for bends, quads and orbit correctors
 }
 
 if( twiss_select_aper == 1 )
